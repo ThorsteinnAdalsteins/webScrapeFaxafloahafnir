@@ -1,14 +1,12 @@
 fScrape.Faxafloahafnir.Ladingsite <- function(
-  url = paste0('https://www.faxafloahafnir.is/en/')
-){
-  page <- NA
-  try(
+  url = 'https://www.faxafloahafnir.is/en/'
+  ){
+  
+    page <- read_html(url)
     
-    page <- read_html(url),
-    
-    ts <- page %>% rvest::html_node(xpath = '//*[@id="enShipTable3"]/table'),
+    ts <- page %>% rvest::html_node(xpath = '//*[@id="enShipTable3"]/table')
     the.table <- ts %>% html_table()
-  )
+
   
   the.table  <- as_tibble(the.table)
   class(the.table) <- c(class(the.table), 'faxafloahafnir.raw')
