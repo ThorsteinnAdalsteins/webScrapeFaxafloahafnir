@@ -52,7 +52,7 @@ fScrape.Marinetraffic.ship.info <- function(url){
         d.out <- the.table %>% 
           select(pk, measures, values)
         
-        class(d.out) <- c(class(d.out), 'marine-traffic.ship-info')
+        class(d.out) <- c(class(d.out), 'marine-traffic.raw')
         
         return(d.out)
         

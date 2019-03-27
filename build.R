@@ -1,10 +1,13 @@
 source('./R_Sources/__init__.R')
 
-# project: 
-#  1) get the main table
-#  2) clean the main table - slightly
-#     -- build a pk
-#  3) check if the pk exists in a db file (dput) and update/insert new entries into the file
+## ###############################################################################
+##  Fyrsta verkefni
+## ###############################################################################
+##  1) Sækja komur og brottfarir af vefsíðunni
+##    - hreinsa gögn og geyma
+##  2) Útbúa aðferð til að geyma bara breytingar án þess að tapa eldri færslum
+##
+## ###############################################################################
 
 raw.table <- fScrape.Faxafloahafnir.Ladingsite()
 cleaned.table <- fClean.raw.Faxafloahafnir.Landingside(raw.table)
@@ -12,52 +15,49 @@ cleaned.table <- fClean.raw.Faxafloahafnir.Landingside(raw.table)
 db.komur.brottfarir <- fUpdate.db.file(
   cleaned.table, './_GognUt/faxafloahafnir.komur.brottfarir.dput'
 )
-
 # hér geta komið inn villur, þar sem komur og brottfarir skipa geta hnikast til um einn til tvo daga.
 # það væri því gagnlegt að skoða hvort að skipið sé að fara tvisvar úr höfn, en það er sennilega of flókið í fyrstu umferð
 
-# til að sækja gögn sem eru komin
-db.old <- fGet.db.komur.brottfarir()
 
-
-# næstu verkefni
-## 1) sækja upplýsingar um skip úr Marine Traffic
-##   -- fá sérstaklega fána skipsins
-##   
+## ##################################################
+## næsta verkefni
+## ##################################################
+##  1) Sækja vefhlekki á Marine Traffic síðu fyrir skip
+##    -- Geyma lista af þessum hlekkjum
+##    -- Halda utan um uppfærslur
+##  2) sækja upplýsingar um skip úr Marine Traffic
+##    -- fá sérstaklega fána skipsins
+##    -- merkja við í lista ef búið er að fara á slóðina
+##       til þess að það sé ekki farið of oft inn á slóðir
+##  3) Hreinsa gögnin og geyma breytingar
+##
+## ##################################################
 mt.urls <- fScrape.Faxafloahafnir.ship.urls()
 mt.urls.db <- fUpdate.db.file( mt.urls, './_GognUt/marine.traffic.urls.dput' )
+view(mt.urls.db)
 
-# processing the urls that are new:
-
+# Sæli url sem eru ný (visited == FALSE)
 mt.urls.left <- mt.urls.db %>% filter(!visited) %>% select(marine.traffic.url)
-# mt.urls.db <- dget('./_GognUt/marine.traffic.urls.dput' )
 
-if(length(mt.urls.left)!= 0){
-  b.list <- lapply(mt.urls.left, fScrape.Marinetraffic.ship.info)
-  
-  for(i in seq(mt.urls.left)){
-    mt.urls.db <- fSet.marine.traffic.site.as.visited(mt.urls.left[i], mt.urls.db)
-  }
-  dput(mt.urls.db, './_GognUt/marine.traffic.urls.dput')
-  
-}
+# fer inn á mt og sæki gögnin
+mt.table.raw <- fScrapeAll.Marinetraffic.ship.info(
+  mt.urls.left$marine.traffic.url,
+  db.fyrir.urls = './_GognUt/marine.traffic.urls2.dput'
+  )
+mt.urls.db <- dget('./_GognUt/marine.traffic.urls.dput')
+mt.urls.left <- mt.urls.db %>% filter(!visited) %>% select(marine.traffic.url)
+length(mt.urls.left$visited == FALSE)
 
-# hreinsun á mt útkomunni
+# hreinsa gögnin
+marine_traffic.clean <- fClean.raw.marine_traffic.table(mt.table.raw)
 
-a.list <- b.list[sapply(b.list, function(x){all(class(x) != 'logical')})]
-a.table <- do.call(rbind, a.list)
+mt.vessel.info.db <- fUpdate.db.file(
+  marine_traffic.clean, 
+  './_GognUt/marine-traffic.ship.info.dput'
+  )
 
-a.table <- a.table %>% select(-vessel_pk) %>%
-  rename(pk = page) %>%
-  mutate(measures = str_replace_all(measures, '\\s', '.'))
-
-s.table <- spread(a.table, key = measures, value = values) %>% view()
-
-class(s.table) <- c(class(s.table), 'marine-traffic.ship.info')
-
-##
-
-ship.info <- fUpdate.db.file(
-  s.table, './_GognUt/marine-traffic.ship.info.dput'
-)
-
+## #############################################################################
+##  Næsta verkefni
+## #############################################################################
+##  1) Tengjast inn á data.world
+##  2) Geyma gögnin þar inni
