@@ -21,7 +21,7 @@ fScrapeAll.Marinetraffic.ship.info <- function(
   # hreinsa út ónýtar línur
   b.list <- b.list[sapply(b.list, function(x){all(class(x) != 'logical')})]
   # bind í eina töflu
-  b.table <- do.call(rbind, a.list)
+  b.table <- do.call(rbind, b.list)
   
   # geng frá gátlistanum og skrifa aftur á diskinn
   

@@ -1,5 +1,10 @@
 source('./R_Sources/__init__.R')
 
+## framleiðsluvörur þessarar skriftu
+db.komur.brottfarir <- dget('./_GognUt/faxafloahafnir.komur.brottfarir.dput')
+db.mt.urls <- dget('./_GognUt/marine.traffic.urls.dput' )
+db.mt.vessel.info <- dget('./_GognUt/marine-traffic.ship.info.dput')
+
 ## ###############################################################################
 ##  Fyrsta verkefni
 ## ###############################################################################
@@ -15,6 +20,10 @@ cleaned.table <- fClean.raw.Faxafloahafnir.Landingside(raw.table)
 db.komur.brottfarir <- fUpdate.db.file(
   cleaned.table, './_GognUt/faxafloahafnir.komur.brottfarir.dput'
 )
+
+# taka til
+rm(raw.table, cleaned.table)
+
 # hér geta komið inn villur, þar sem komur og brottfarir skipa geta hnikast til um einn til tvo daga.
 # það væri því gagnlegt að skoða hvort að skipið sé að fara tvisvar úr höfn, en það er sennilega of flókið í fyrstu umferð
 
@@ -33,20 +42,18 @@ db.komur.brottfarir <- fUpdate.db.file(
 ##
 ## ##################################################
 mt.urls <- fScrape.Faxafloahafnir.ship.urls()
-mt.urls.db <- fUpdate.db.file( mt.urls, './_GognUt/marine.traffic.urls.dput' )
-view(mt.urls.db)
+db.mt.urls <- fUpdate.db.file( mt.urls, './_GognUt/marine.traffic.urls.dput' )
 
 # Sæli url sem eru ný (visited == FALSE)
-mt.urls.left <- mt.urls.db %>% filter(!visited) %>% select(marine.traffic.url)
+mt.urls.left <- db.mt.urls %>% filter(!visited) %>% select(marine.traffic.url)
 
 # fer inn á mt og sæki gögnin
 mt.table.raw <- fScrapeAll.Marinetraffic.ship.info(
   mt.urls.left$marine.traffic.url,
-  db.fyrir.urls = './_GognUt/marine.traffic.urls2.dput'
+  db.fyrir.urls = './_GognUt/marine.traffic.urls.dput'
   )
 mt.urls.db <- dget('./_GognUt/marine.traffic.urls.dput')
 mt.urls.left <- mt.urls.db %>% filter(!visited) %>% select(marine.traffic.url)
-length(mt.urls.left$visited == FALSE)
 
 # hreinsa gögnin
 marine_traffic.clean <- fClean.raw.marine_traffic.table(mt.table.raw)
@@ -55,6 +62,12 @@ mt.vessel.info.db <- fUpdate.db.file(
   marine_traffic.clean, 
   './_GognUt/marine-traffic.ship.info.dput'
   )
+
+# taka til
+rm(mt.urls, mt.urls.left, mt.table.raw, marine_traffic.clean)
+
+db.mt.vessel.info %>% view()
+
 
 ## #############################################################################
 ##  Næsta verkefni
