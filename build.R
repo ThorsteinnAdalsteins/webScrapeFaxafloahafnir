@@ -28,6 +28,7 @@ rm(raw.table, cleaned.table)
 # það væri því gagnlegt að skoða hvort að skipið sé að fara tvisvar úr höfn, en það er sennilega of flókið í fyrstu umferð
 
 
+
 ## ##################################################
 ## næsta verkefni
 ## ##################################################
@@ -68,6 +69,14 @@ rm(mt.urls, mt.urls.left, mt.table.raw, marine_traffic.clean)
 
 db.mt.vessel.info %>% view()
 
+
+# exporta gögnum
+db.komur.brottfarir <- dget('./_GognUt/faxafloahafnir.komur.brottfarir.dput')
+write.csv(db.komur.brottfarir, './_GognUt/faxafloahafnir_komur_brottfarir.csv',
+          row.names = FALSE)
+# óþarfi db.mt.urls <- dget('./_GognUt/marine.traffic.urls.dput' )
+db.mt.vessel.info <- dget('./_GognUt/marine-traffic.ship.info.dput')
+write.csv(db.mt.vessel.info, './_GognUt/faxafloahafnir_skip.csv', row.names = FALSE)
 
 ## #############################################################################
 ##  Næsta verkefni
