@@ -72,8 +72,6 @@ mt.vessel.info.db <- fUpdate.db.file(
 # taka til
 rm(mt.urls, mt.urls.left, mt.table.raw, marine_traffic.clean)
 
-db.mt.vessel.info %>% view()
-
 
 # exporta gögnum
 db.komur.brottfarir <- dget('./_GognUt/faxafloahafnir.komur.brottfarir.dput')
