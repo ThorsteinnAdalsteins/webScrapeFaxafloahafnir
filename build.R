@@ -1,4 +1,7 @@
+
+rm(list = ls())
 source('./R_Sources/__init__.R')
+require(lubridate)
 
 ## framleiðsluvörur þessarar skriftu
 db.komur.brottfarir <- dget('./_GognUt/faxafloahafnir.komur.brottfarir.dput')
@@ -57,6 +60,8 @@ mt.urls.db <- dget('./_GognUt/marine.traffic.urls.dput')
 mt.urls.left <- mt.urls.db %>% filter(!visited) %>% select(marine.traffic.url)
 
 # hreinsa gögnin
+
+## hér er eitthvað týnt
 marine_traffic.clean <- fClean.raw.marine_traffic.table(mt.table.raw)
 
 mt.vessel.info.db <- fUpdate.db.file(
