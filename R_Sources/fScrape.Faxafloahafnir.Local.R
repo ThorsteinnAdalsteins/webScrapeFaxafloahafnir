@@ -1,13 +1,21 @@
 fScrape.Faxafloahafnir.Local <- function(
-  local.path = './_OnnurGogn', file.no = NA
+  local.path = './_OnnurGogn', 
+  file.no = NA,
+  file.path = NA
   ){
   
-  files <- list.files(path = local.path, pattern = '.html', full.names = TRUE)
+  if(!is.na(file.path)){
+    page <- read_html(file.path)
+  } else {
+    
+    files <- list.files(path = local.path, pattern = '.html', full.names = TRUE)
+    
+    if(is.na(file.no)){file.no = length(files)}
+    
+    page <- read_html(files[file.no])
+    
+  }
   
-  if(is.na(file.no)){file.no = length(files)}
-    
-  page <- read_html(files[file.no])
-    
     ts <- page %>% rvest::html_node(xpath = '//*[@id="enShipTable3"]/table')
     the.table <- ts %>% html_table()
 

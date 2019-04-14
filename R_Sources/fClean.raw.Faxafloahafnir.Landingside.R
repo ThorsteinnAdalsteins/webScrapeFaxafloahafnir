@@ -3,11 +3,20 @@ fClean.raw.Faxafloahafnir.Landingside <- function(raw.table){
     stop('Taflan er ekki sótt með réttu falli')
     }
   
+  if(all(names(raw.table) == c('Nafn', 'Gerð', 'Staðsetning', 'Tími', 'BT'))){
+    names(raw.table) <- c("Name", "Type", "Location", "Time", "BT")
+  }
+  
+  names(db.komur.brottfarir)
   fix.table <- raw.table %>% 
     mutate(
-      Location = str_replace(.$Location, ' at | to ', '/'),
+      Location = str_replace(.$Location, ' at | to | að | til ', '/'),
       Time = dmy_hm(Time)
       )
+  
+  # lagfæri galla ef færslan er bara "fer"
+  
+  fix.table$Location[str_which(fix.table$Location, 'Fer')] <- 'Fer/Útlönd'
   
   fix.table <- fix.table %>% 
     separate(

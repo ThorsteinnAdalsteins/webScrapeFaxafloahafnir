@@ -18,7 +18,11 @@ db.mt.vessel.info <- dget('./_GognUt/marine-traffic.ship.info.dput')
 ##
 ## ###############################################################################
 
-raw.table <- fScrape.Faxafloahafnir.Local()
+list.files(path = './_OnnurGogn', pattern = '.html', full.names = TRUE)
+the.file <- list.files(path = './_OnnurGogn', pattern = '.html', full.names = TRUE)[1]
+
+raw.table <- fScrape.Faxafloahafnir.Local(file.path = the.file)
+
 cleaned.table <- fClean.raw.Faxafloahafnir.Landingside(raw.table)
 
 db.komur.brottfarir <- fUpdate.db.file(
@@ -85,7 +89,7 @@ write.csv(db.komur.brottfarir, './_GognUt/faxafloahafnir_komur_brottfarir.csv',
 db.mt.vessel.info <- dget('./_GognUt/marine-traffic.ship.info.dput')
 write.csv(db.mt.vessel.info, './_GognUt/faxafloahafnir_skip.csv', row.names = FALSE)
 
-c## #############################################################################
+## #############################################################################
 ##  Næsta verkefni
 ## #############################################################################
 ##  1) Tengjast inn á data.world
