@@ -1,4 +1,6 @@
 
+## til að sækja vefsíðu, prófa https://hide.me/en/proxy
+
 rm(list = ls())
 source('./R_Sources/__init__.R')
 require(lubridate)
@@ -19,7 +21,7 @@ db.mt.vessel.info <- dget('./_GognUt/marine-traffic.ship.info.dput')
 ## ###############################################################################
 
 list.files(path = './_OnnurGogn', pattern = '.html', full.names = TRUE)
-the.file <- list.files(path = './_OnnurGogn', pattern = '.html', full.names = TRUE)[1]
+the.file <- list.files(path = './_OnnurGogn', pattern = '.html', full.names = TRUE)[2]
 
 raw.table <- fScrape.Faxafloahafnir.Local(file.path = the.file)
 
@@ -88,6 +90,7 @@ write.csv(db.komur.brottfarir, './_GognUt/faxafloahafnir_komur_brottfarir.csv',
 # óþarfi db.mt.urls <- dget('./_GognUt/marine.traffic.urls.dput' )
 db.mt.vessel.info <- dget('./_GognUt/marine-traffic.ship.info.dput')
 write.csv(db.mt.vessel.info, './_GognUt/faxafloahafnir_skip.csv', row.names = FALSE)
+
 
 ## #############################################################################
 ##  Næsta verkefni
