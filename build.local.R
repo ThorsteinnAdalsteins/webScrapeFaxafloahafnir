@@ -1,5 +1,6 @@
 
-## til að sækja vefsíðu, prófa https://hide.me/en/proxy
+## til að sækja vefsíðu, prófa https://hide.me/en/proxy+
+## vefsvæði https://www.faxafloahafnir.is/en/
 
 rm(list = ls())
 source('./R_Sources/__init__.R')
@@ -21,7 +22,8 @@ db.mt.vessel.info <- dget('./_GognUt/marine-traffic.ship.info.dput')
 ## ###############################################################################
 
 list.files(path = './_OnnurGogn', pattern = '.html', full.names = TRUE)
-the.file <- list.files(path = './_OnnurGogn', pattern = '.html', full.names = TRUE)[2]
+all.files <-list.files(path = './_OnnurGogn', pattern = '.html', full.names = TRUE)
+the.file <- all.files[length(all.files)]
 
 raw.table <- fScrape.Faxafloahafnir.Local(file.path = the.file)
 
